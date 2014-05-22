@@ -1,0 +1,19 @@
+.citizen_star {
+	stroke:#A87;
+	fill-opacity:0;
+}
+
+.citizen_attributes {
+	stroke:#F00;
+	fill:#F00;
+	fill-opacity:0.5;
+}
+
+.aspects_star {
+	stroke:#A87;
+	fill-opacity:0;
+}
+
+.citizen_aspects {
+	fill-opacity:0.5;
+}

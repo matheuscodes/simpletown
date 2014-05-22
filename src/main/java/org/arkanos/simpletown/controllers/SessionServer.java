@@ -1,5 +1,7 @@
 package org.arkanos.simpletown.controllers;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.servlet.http.Cookie;
@@ -115,5 +117,36 @@ public class SessionServer {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	static private void registerLogin(int id, String ip, String agent, boolean success) {
+		// TODO sanitize entries... if "asdsad'; drop table all;" I'm screwed.
+		String query = "INSERT INTO user_login_attempts VALUES ";
+		query += "(" + id + ",NOW(),'" + ip + "','" + agent + "'," + success + ");";
+		// TODO add proper error handling
+		Database.execute(query);
+	}
+
+	static public Session makeLogin(String username, String password, HttpServletRequest request) {
+		// TODO sanitize entries... if "asdsad'; drop table all;" I'm screwed.
+		Session session = null;
+		boolean success = false;
+		try {
+			String query = "SELECT id,password FROM user WHERE username='" + username + "';";
+			ResultSet results = Database.query(query);
+			//FIXME NPE
+			results.next();
+			String db_pass = results.getString("password");
+			if (db_pass.compareTo(password) == 0) {
+				session = SessionServer.createSession(results.getInt("id"));
+				success = true;
+			}
+			registerLogin(results.getInt("id"), request.getRemoteAddr(), request.getHeader("User-Agent"), success);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// TODO add proper error handling
+		return session;
 	}
 }
