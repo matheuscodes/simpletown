@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.arkanos.simpletown.controllers.CookieHandler;
 import org.arkanos.simpletown.controllers.HTMLPrinter;
+import org.arkanos.simpletown.controllers.HTTPHandler;
 import org.arkanos.simpletown.controllers.SessionServer;
 import org.arkanos.simpletown.controllers.SessionServer.Session;
 
@@ -38,6 +39,8 @@ public class Login extends HttpServlet {
 				response.sendRedirect("Main");
 			}
 		}
+		
+		HTTPHandler.setUpUIHeaders(response);
 
 		HTMLPrinter.openHTML(response);
 

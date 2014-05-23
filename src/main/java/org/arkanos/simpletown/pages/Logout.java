@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.arkanos.simpletown.controllers.CookieHandler;
 import org.arkanos.simpletown.controllers.HTMLPrinter;
+import org.arkanos.simpletown.controllers.HTTPHandler;
 import org.arkanos.simpletown.controllers.SessionServer;
 import org.arkanos.simpletown.controllers.SessionServer.Session;
 
@@ -37,6 +38,9 @@ public class Logout extends HttpServlet {
 		if (session != null) {
 			SessionServer.killSession(session.getKey());
 		}
+		
+		HTTPHandler.setUpUIHeaders(response);
+		
 		CookieHandler.deleteCookies(request, response);
 
 		HTMLPrinter.openHTML(response);

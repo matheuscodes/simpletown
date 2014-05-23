@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.arkanos.simpletown.controllers.HTMLPrinter;
+import org.arkanos.simpletown.controllers.HTTPHandler;
 
 /**
  * Servlet implementation class Error
@@ -30,6 +31,8 @@ public class Error extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HTTPHandler.setUpUIHeaders(response);
+		
 		HTMLPrinter.openHTML(response);
 
 		HTMLPrinter.openMainContainer(response, "Error", null);
