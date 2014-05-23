@@ -6,7 +6,7 @@ public class CacheServer {
 	//static CitizenCache citizen_cache = null;
 	//static DialogCache dialog_cache = null;
 	//static ConditionCache condition_cache = null;
-	//static PlaceCache place_cache = null;
+	static PlaceCache place_cache = null;
 	//static DramaCache drama_cache = null;
 	static UserCache user_cache = null;
 	//private static CityCache city_cache;
@@ -16,7 +16,7 @@ public class CacheServer {
 		//getCitizens().build();
 		//getDialogs().build();
 		//getConditions().build();
-		//getPlaces().build();
+		getPlaces().build();
 		//getDramas().build();
 		getUsers().build();
 		//getCity().build();
@@ -58,7 +58,7 @@ public class CacheServer {
 			condition_cache = new ConditionCache();
 		}
 		return condition_cache;
-	}
+	}*/
 
 	static public PlaceCache getPlaces() {
 		if (place_cache == null) {
@@ -66,7 +66,8 @@ public class CacheServer {
 		}
 		return place_cache;
 	}
-
+	
+	/*
 	static public DramaCache getDramas() {
 		if (drama_cache == null) {
 			drama_cache = new DramaCache();
