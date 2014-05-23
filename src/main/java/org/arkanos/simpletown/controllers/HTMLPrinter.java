@@ -12,13 +12,15 @@ public class HTMLPrinter {
 		response.getWriter().println("<head>");
 		response.getWriter().println(HTMLPrinter.basicHTMLHeaders());
 		response.getWriter().println("</head>");
+		response.getWriter().println("<body>");
 	}
 	
 	public static void closeHTML(HttpServletResponse response) throws IOException {
 		response.getWriter().println("</body></html>");
 	}
 
-	public static void openMainContainer(PrintWriter writer, String crumbs, String username) {
+	public static void openMainContainer(HttpServletResponse response, String crumbs, String username) throws IOException {
+		PrintWriter writer = response.getWriter();
 		writer.println("<div class='main_cointainer_block'>");
 		writer.println("<div class='main_cointainer_title'>");
 		writer.println("<p> Simpletown </p>");
@@ -32,11 +34,12 @@ public class HTMLPrinter {
 		writer.println("<div class='main_cointainer'>");
 	}
 
-	public static void closeMainContainer(PrintWriter writer) {
+	public static void closeMainContainer(HttpServletResponse response) throws IOException {
+		PrintWriter writer = response.getWriter();
 		writer.println("</div></div>");
 	}
 
-	public static String windowWrap(String title, String content_class, String content) {
+	public static void windowWrap(String title, String content_class, String content, HttpServletResponse response) throws IOException {
 		String window = new String();
 		window += "<div class='window_block " + content_class + "_block'>";
 		window += "<div class='window_title'>";
@@ -45,7 +48,7 @@ public class HTMLPrinter {
 		window += "<div class='window " + content_class + "'>";
 		window += content;
 		window += "</div></div>";
-		return window;
+		response.getWriter().println(window);
 	}
 
 	public static String basicHTMLHeaders() {

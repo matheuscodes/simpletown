@@ -31,9 +31,8 @@ public class Error extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HTMLPrinter.openHTML(response);
-		response.getWriter().println("<body>");
 
-		HTMLPrinter.openMainContainer(response.getWriter(), "Error", null);
+		HTMLPrinter.openMainContainer(response, "Error", null);
 
 		String content = new String();
 		content += "<h1>Oops... there was an error.</h1>";
@@ -43,9 +42,9 @@ public class Error extends HttpServlet {
 			content += "<p>Server logs were written. If the SysAdmin didn't die by poisoning on server room fumes, he will get around to it.</p>";
 		}
 		// TODO add some log entries for the errors
-		response.getWriter().println(HTMLPrinter.windowWrap("Error " + request.getParameter("e"), "error", content));
+		HTMLPrinter.windowWrap("Error " + request.getParameter("e"), "error", content, response);
 
-		HTMLPrinter.closeMainContainer(response.getWriter());
+		HTMLPrinter.closeMainContainer(response);
 
 		HTMLPrinter.closeHTML(response);
 	}

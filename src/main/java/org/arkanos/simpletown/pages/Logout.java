@@ -16,7 +16,7 @@ import org.arkanos.simpletown.controllers.SessionServer.Session;
 /**
  * Servlet implementation class Logout
  */
-@WebServlet("/Logout")
+@WebServlet("/logout")
 public class Logout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -41,19 +41,15 @@ public class Logout extends HttpServlet {
 
 		HTMLPrinter.openHTML(response);
 
-		response.getWriter().println("<head>");
-		response.getWriter().println(HTMLPrinter.basicHTMLHeaders());
-		response.getWriter().println("</head><body>");
-
-		HTMLPrinter.openMainContainer(response.getWriter(), "Logout", null);
+		HTMLPrinter.openMainContainer(response, "Logout", null);
 
 		String content = new String();
 		content += "<h1>Sucessfully logged out.</h1>";
 		content += "<p>All cookies and stored information were deleted.</p>";
 
-		response.getWriter().println(HTMLPrinter.windowWrap("Logged out!", "logout", content));
+		HTMLPrinter.windowWrap("Logged out!", "logout", content, response);
 
-		HTMLPrinter.closeMainContainer(response.getWriter());
+		HTMLPrinter.closeMainContainer(response);
 
 		HTMLPrinter.closeHTML(response);
 	}

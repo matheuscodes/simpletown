@@ -40,9 +40,8 @@ public class Login extends HttpServlet {
 		}
 
 		HTMLPrinter.openHTML(response);
-		response.getWriter().println("<body>");
 
-		HTMLPrinter.openMainContainer(response.getWriter(), "Login", null);
+		HTMLPrinter.openMainContainer(response, "Login", null);
 
 		String content = new String();
 		content += "<form action='' method='post' name='login_form'>";
@@ -82,9 +81,9 @@ public class Login extends HttpServlet {
 		content += "</table>";
 		content += "</form>";
 
-		response.getWriter().println(HTMLPrinter.windowWrap("Username and password", "login", content));
+		HTMLPrinter.windowWrap("Username and password", "login", content, response);
 
-		HTMLPrinter.closeMainContainer(response.getWriter());
+		HTMLPrinter.closeMainContainer(response);
 
 		HTMLPrinter.closeHTML(response);
 	}
