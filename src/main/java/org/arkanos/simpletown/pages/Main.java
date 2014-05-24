@@ -35,9 +35,10 @@ public class Main extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Session s = null;
 		Cookie session_cookie = CookieHandler.searchCookie(CookieHandler.SIMPLETOWN_SESSION, request.getCookies());
 		if (session_cookie != null) {
-			Session s = SessionServer.getSession(session_cookie.getValue());
+			s = SessionServer.getSession(session_cookie.getValue());
 			if (s == null) {
 				response.sendRedirect("login");
 				return;
@@ -51,14 +52,19 @@ public class Main extends HttpServlet {
 		HTTPHandler.setUpUIHeaders(response);
 
 		HTMLPrinter.openHTML(response);
-
-		HTMLPrinter.openMainContainer(response, "Mainplace", null);
-
-		String content = "<p onclick='SimpletownUIController.moveTo(\"main-st/1/\")'> START </p>";
 		
-		HTMLPrinter.windowWrap("Go to...", "places_to_go", content, response);
+		HTMLPrinter.openMainContainer(response, s.getUser().getLead().getName()+" "+s.getUser().getLead().getLastName(), null);
+
+		
+		
+		HTMLPrinter.windowWrap("Go through...", "place_navigation", "", response);
+		
+		String content = "<p onclick='controller.moveTo(\"main-st/1/\")'> START </p>";
+		HTMLPrinter.windowWrap("Story", "citizen_story", content, response);
 
 		HTMLPrinter.closeMainContainer(response);
+		
+		response.getWriter().println("<script>controller.redoLayout();</script>");
 
 		HTMLPrinter.closeHTML(response);
 	}

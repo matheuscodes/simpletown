@@ -39,7 +39,7 @@ public class CitizenCache implements CacheInterface {
 			size = count.getInt(1);
 			citizens = new HashMap<String, Citizen>(size);
 			count.close();
-
+			
 			ResultSet all = Database.query("SELECT * FROM "+Citizen.TABLE+
 					" LEFT JOIN "+Citizen.ASPECTS_TABLE+" a "+
 					" ON "+Citizen.ID_FIELD+" = a."+Citizen.ASPECTS_ID_FIELD+

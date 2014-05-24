@@ -10,8 +10,9 @@ var SimpletownUIController = {
 	redoLayout: function(){
 		var places = document.getElementById("place_navigation_id");
 		if(places){
+			console.log("aaaa");
 			places.innerHTML = "";
-			for(var field in SimpletownEngine.getScenario()['connections']){
+			for(var field in this.game.getScenario()['connections']){
 				places.innerHTML += "<p onclick='"+controllerName+".moveTo(\""+SimpletownEngine.getScenario()['connections'][field]['url']+"\")'>..."+field+".</p>";
 			}
 		}
@@ -23,4 +24,3 @@ var SimpletownUIController = {
 };
 
 var controller = SimpletownUIController;
-controller.redoLayout();
