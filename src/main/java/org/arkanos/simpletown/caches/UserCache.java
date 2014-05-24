@@ -3,8 +3,10 @@ package org.arkanos.simpletown.caches;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Vector;
 
 import org.arkanos.simpletown.controllers.Database;
+import org.arkanos.simpletown.logic.Citizen;
 
 public class UserCache implements CacheInterface {
 	
@@ -14,7 +16,7 @@ public class UserCache implements CacheInterface {
 		String username = null;
 		String name = null;
 
-		//Vector<Citizen> active = null;
+		Vector<Citizen> active = null;
 
 		public User(int id, String username, String name) {
 			this.id = id;
@@ -22,7 +24,7 @@ public class UserCache implements CacheInterface {
 			this.name = name;
 		}
 
-		/*public void addCitizen(Citizen which) {
+		public void addCitizen(Citizen which) {
 			getCitizens().add(which);
 		}
 
@@ -30,7 +32,7 @@ public class UserCache implements CacheInterface {
 			if (active == null)
 				active = new Vector<Citizen>();
 			return active;
-		}*/
+		}
 
 		public int getID() {
 			return id;

@@ -3,9 +3,7 @@ package org.arkanos.simpletown.caches;
 
 public class CacheServer {
 
-	//static CitizenCache citizen_cache = null;
-	//static DialogCache dialog_cache = null;
-	//static ConditionCache condition_cache = null;
+	static CitizenCache citizen_cache = null;
 	static PlaceCache place_cache = null;
 	//static DramaCache drama_cache = null;
 	static UserCache user_cache = null;
@@ -13,9 +11,7 @@ public class CacheServer {
 
 	static public void buildAll() {
 		// TODO add info and prints
-		//getCitizens().build();
-		//getDialogs().build();
-		//getConditions().build();
+		getCitizens().build();
 		getPlaces().build();
 		//getDramas().build();
 		getUsers().build();
@@ -23,15 +19,11 @@ public class CacheServer {
 	}
 
 	static public void flushAll() {
-		/*if (citizen_cache != null)
+		if (citizen_cache != null)
 			citizen_cache.flush();
-		if (dialog_cache != null)
-			dialog_cache.flush();
-		if (condition_cache != null)
-			condition_cache.flush();
 		if (place_cache != null)
 			place_cache.flush();
-		if (drama_cache != null)
+		/*if (drama_cache != null)
 			drama_cache.flush();*/
 		if (user_cache != null)
 			user_cache.flush();/*
@@ -39,26 +31,12 @@ public class CacheServer {
 			city_cache.flush();*/
 	}
 
-	/*static public CitizenCache getCitizens() {
+	static public CitizenCache getCitizens() {
 		if (citizen_cache == null) {
 			citizen_cache = new CitizenCache();
 		}
 		return citizen_cache;
 	}
-
-	static public DialogCache getDialogs() {
-		if (dialog_cache == null) {
-			dialog_cache = new DialogCache();
-		}
-		return dialog_cache;
-	}
-
-	static public ConditionCache getConditions() {
-		if (condition_cache == null) {
-			condition_cache = new ConditionCache();
-		}
-		return condition_cache;
-	}*/
 
 	static public PlaceCache getPlaces() {
 		if (place_cache == null) {
