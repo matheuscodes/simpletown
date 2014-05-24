@@ -17,3 +17,26 @@
 .citizen_aspects {
 	fill-opacity:0.5;
 }
+
+.place_navigation_block {
+	float: right;
+	margin: 1% 1%;
+	width: 33%;
+}
+
+.place_navigation_block p{
+	height: 1.1em;
+	vertical-align: middle;
+	padding: 1%;
+	margin: 1%;
+}
+
+.place_navigation_block p:hover{
+	font-weight:bold;
+}
+
+.citizen_story_block {
+	float: right;
+	margin: 1% 1%;
+	width: 98%;
+}
