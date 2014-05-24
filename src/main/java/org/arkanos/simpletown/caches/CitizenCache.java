@@ -31,7 +31,6 @@ public class CitizenCache implements CacheInterface {
 
 	public synchronized boolean build() {
 		int size = 0;
-		System.out.println("baaa");
 		try {
 			ResultSet count = Database.query("SELECT COUNT(*) FROM "+Citizen.TABLE);
 			count.next();

@@ -30,7 +30,6 @@ public class UserCache implements CacheInterface {
 		}
 		
 		public void setLead(Citizen which){
-			System.out.println(this.lead+" , "+which.getName());
 			this.lead = which;
 		}
 		
