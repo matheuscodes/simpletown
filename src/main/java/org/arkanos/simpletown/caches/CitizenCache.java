@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.arkanos.simpletown.controllers.Database;
 import org.arkanos.simpletown.logic.Citizen;
 import org.arkanos.simpletown.logic.Citizen.Attribute;
+import org.arkanos.simpletown.logic.Place;
 
 public class CitizenCache implements CacheInterface {
 
@@ -16,6 +17,7 @@ public class CitizenCache implements CacheInterface {
 	public CitizenCache() {
 		super();
 		CacheServer.getUsers(); //dependency
+		CacheServer.getPlaces(); //dependency
 		build();
 	}
 
@@ -38,9 +40,14 @@ public class CitizenCache implements CacheInterface {
 			citizens = new HashMap<String, Citizen>(size);
 			count.close();
 
-			ResultSet all = Database.query("SELECT * FROM "+Citizen.TABLE+" LEFT JOIN "+Citizen.ASPECTS_TABLE+" ON "+Citizen.ID_FIELD+" = "+Citizen.ASPECTS_ID_FIELD);
+			ResultSet all = Database.query("SELECT * FROM "+Citizen.TABLE+
+					" LEFT JOIN "+Citizen.ASPECTS_TABLE+" a "+
+					" ON "+Citizen.ID_FIELD+" = a."+Citizen.ASPECTS_ID_FIELD+
+					" LEFT JOIN "+Citizen.USER_TABLE+" u "+
+					" ON "+Citizen.ID_FIELD+" = u."+Citizen.USER_CITIZEN_ID_FIELD);
 			
 			while (all.next()) {
+				Citizen newone = null;
 				String name = all.getString(Citizen.NAME_FIELD);
 				String last_name = all.getString(Citizen.LAST_NAME_FIELD);
 				byte[] attributes = new byte[Attribute.values().length];
@@ -52,16 +59,25 @@ public class CitizenCache implements CacheInterface {
 				attributes[Attribute.VIGOR.ordinal()] = all.getByte(Attribute.VIGOR.toString());
 				attributes[Attribute.PERCEPTION.ordinal()] = all.getByte(Attribute.PERCEPTION.toString());
 				attributes[Attribute.WITS.ordinal()] = all.getByte(Attribute.WITS.toString());
-				citizens.put(all.getString(Citizen.ID_FIELD), new Citizen(all.getInt(Citizen.ID_FIELD), name, last_name, attributes));
+				newone = new Citizen(all.getInt(Citizen.ID_FIELD), name, last_name, attributes);
+				citizens.put(all.getString(Citizen.ID_FIELD), newone);
 				byte behavior = all.getByte(Citizen.ASPECTS_BEHAVIOUR_FIELD);
 				byte state_of_mind = all.getByte(Citizen.ASPECTS_STATE_OF_MIND_FIELD);
 				byte bonding = all.getByte(Citizen.ASPECTS_BONDING_FIELD);
-				citizens.get(all.getString(Citizen.ID_FIELD)).setAspects(behavior, state_of_mind, bonding);
+				newone.setAspects(behavior, state_of_mind, bonding);
 				// TODO optimize, avoid the "gets" and use variable
 				if (all.getInt(Citizen.USER_ID_FIELD) != 0) {
-					CacheServer.getUsers().getUser(all.getInt(Citizen.USER_ID_FIELD)).addCitizen(citizens.get(all.getString(Citizen.ID_FIELD)));
+					CacheServer.getUsers().getUser(all.getInt(Citizen.USER_ID_FIELD)).addCitizen(newone);
+					String address = all.getString(Citizen.USER_STREET_FIELD);
+					address += "/"+all.getString(Citizen.USER_NUMBER_FIELD);
+					address += "/"+all.getString(Citizen.USER_PLACE_FIELD);
+					if(!address.endsWith("/")) address += "/";
+					Place where = CacheServer.getPlaces().getPlace(address);
+					if(where != null){
+						newone.setPlace(where);
+					}
 					if(all.getBoolean(Citizen.LEAD_ROLE_FIELD)){
-						CacheServer.getUsers().getUser(all.getInt(Citizen.USER_ID_FIELD)).setLead(citizens.get(all.getString(Citizen.ID_FIELD)));
+						CacheServer.getUsers().getUser(all.getInt(Citizen.USER_ID_FIELD)).setLead(newone);
 					}
 				}
 			}

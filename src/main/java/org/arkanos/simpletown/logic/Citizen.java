@@ -5,6 +5,7 @@ public class Citizen {
 	
 	static public final String TABLE = "citizen";
 	static public final String ASPECTS_TABLE = "citizen_aspects";
+	public static final String USER_TABLE = "citizen_user";
 	
 	static public final String ID_FIELD = "id";
 	static public final String USER_ID_FIELD = "user_id";
@@ -16,6 +17,11 @@ public class Citizen {
 	static public final String ASPECTS_BEHAVIOUR_FIELD = "behaviour";
 	static public final String ASPECTS_STATE_OF_MIND_FIELD = "state_of_mind";
 	static public final String ASPECTS_BONDING_FIELD = "bonding";
+	
+	static public final String USER_CITIZEN_ID_FIELD = "citizen_id";
+	static public final String USER_STREET_FIELD = "street";
+	static public final String USER_NUMBER_FIELD = "number";
+	static public final String USER_PLACE_FIELD = "place";
 	
 	
 	public enum Attribute {
@@ -48,6 +54,7 @@ public class Citizen {
 	byte behavior = 0;
 	byte state_of_mind = 0;
 	byte bonding = 0;
+	private Place place;
 
 	//Vector<Skill> skills;
 
@@ -123,5 +130,13 @@ public class Citizen {
 			return "coldly";
 		}
 		return "";
+	}
+
+	public void setPlace(Place where) {
+		this.place = where;
+	}
+	
+	public Place getPlace(){
+		return this.place;
 	}
 }
