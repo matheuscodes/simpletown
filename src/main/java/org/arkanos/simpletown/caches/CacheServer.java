@@ -8,31 +8,47 @@ public class CacheServer {
 	//static DramaCache drama_cache = null;
 	static UserCache user_cache = null;
 	//private static CityCache city_cache;
-
-	static public void buildAll() {
+	
+	static synchronized public void buildAll() {
 		// TODO add info and prints
+		getUsers();
+		getCitizens();
+		getPlaces();
+		//getDramas().build();
+		//getCity().build();
+	}
+	
+	static synchronized public void forceBuildAll() {
+		// TODO add info and prints
+		getUsers().build();
 		getCitizens().build();
 		getPlaces().build();
 		//getDramas().build();
-		getUsers().build();
 		//getCity().build();
 	}
 
-	static public void flushAll() {
-		if (citizen_cache != null)
+	static synchronized public void flushAll() {
+		if (user_cache != null){
+			user_cache.flush();
+			user_cache = null;
+		}
+		if (citizen_cache != null){
 			citizen_cache.flush();
-		if (place_cache != null)
+			citizen_cache = null;
+		}
+		if (place_cache != null){
 			place_cache.flush();
+			place_cache = null;
+		}
 		/*if (drama_cache != null)
-			drama_cache.flush();*/
-		if (user_cache != null)
-			user_cache.flush();/*
+			drama_cache.flush();
 		if (city_cache != null)
 			city_cache.flush();*/
 	}
 
 	static public CitizenCache getCitizens() {
 		if (citizen_cache == null) {
+			getUsers();
 			citizen_cache = new CitizenCache();
 		}
 		return citizen_cache;

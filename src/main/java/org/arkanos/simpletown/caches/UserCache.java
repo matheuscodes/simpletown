@@ -17,6 +17,7 @@ public class UserCache implements CacheInterface {
 		String name = null;
 
 		Vector<Citizen> active = null;
+		Citizen lead = null;
 
 		public User(int id, String username, String name) {
 			this.id = id;
@@ -26,6 +27,15 @@ public class UserCache implements CacheInterface {
 
 		public void addCitizen(Citizen which) {
 			getCitizens().add(which);
+		}
+		
+		public void setLead(Citizen which){
+			System.out.println(this.lead+" , "+which.getName());
+			this.lead = which;
+		}
+		
+		public Citizen getLead(){
+			return this.lead;
 		}
 
 		public Vector<Citizen> getCitizens() {
@@ -51,7 +61,7 @@ public class UserCache implements CacheInterface {
 		build();
 	}
 
-	public boolean build() {
+	public synchronized boolean build() {
 		int size = 0;
 		try {
 			ResultSet count = Database.query("SELECT COUNT(*) FROM user");
@@ -74,7 +84,7 @@ public class UserCache implements CacheInterface {
 		return true;
 	}
 
-	public boolean flush() {
+	public synchronized boolean flush() {
 		// TODO Auto-generated method stub
 		return false;
 	}

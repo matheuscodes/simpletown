@@ -24,7 +24,7 @@ public class PlaceAPI extends HttpServlet {
      */
     public PlaceAPI() {
         super();
-        CacheServer.buildAll();
+		CacheServer.buildAll();
     }
 
 	/**
@@ -43,6 +43,30 @@ public class PlaceAPI extends HttpServlet {
 		Place selected = CacheServer.getPlaces().getPlace(place_reference);
 		if(selected != null){
 			response.getWriter().println(selected.toJSON());
+		}
+		else{
+			//FIXME redirect messes up CSS
+			response.sendError(404, "Place not found.");
+		}
+	}
+	
+	/**
+	 * @see HttpServlet#doPut(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		HTTPHandler.setUpAPIHeaders(response);
+		
+		String place_reference = request.getRequestURI().toString();
+		place_reference = place_reference.substring(place_reference.lastIndexOf("/places/"));
+		//TODO maybe not required
+		if(!place_reference.endsWith("/")) place_reference += "/";
+		place_reference = place_reference.replace("/places/","");
+		
+		Place selected = CacheServer.getPlaces().getPlace(place_reference);
+		if(selected != null){
+			//response.getWriter().println(selected.toJSON());
+			//TODO
 		}
 		else{
 			//FIXME redirect messes up CSS

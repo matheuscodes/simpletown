@@ -12,7 +12,7 @@ public class PlaceCache implements CacheInterface {
 	HashMap<String,Place> places;
 
 	@Override
-	public boolean build() {
+	public synchronized boolean build() {
 		int size = 0;
 		try {
 			ResultSet count = Database.query("SELECT COUNT(*) FROM "+Place.PLACE_TABLE);
@@ -70,7 +70,7 @@ public class PlaceCache implements CacheInterface {
 	}
 
 	@Override
-	public boolean flush() {
+	public synchronized boolean flush() {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -10,6 +10,7 @@ public class Citizen {
 	static public final String USER_ID_FIELD = "user_id";
 	static public final String NAME_FIELD = "name";
 	static public final String LAST_NAME_FIELD = "last_name";
+	static public final String LEAD_ROLE_FIELD = "lead_role";
 	
 	static public final String ASPECTS_ID_FIELD = "citizen_id";
 	static public final String ASPECTS_BEHAVIOUR_FIELD = "behaviour";
