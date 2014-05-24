@@ -25,6 +25,15 @@ public class Place {
 	static public final String CONNECTION_NUMBER_NEXT_FIELD = "number_next";
 	static public final String CONNECTION_PLACE_NEXT_FIELD = "place_next";
 	static public final String CONNECTION_BILATERAL = "bilateral";
+
+	public static final String DRAMA_TABLE = "drama_place";
+	
+	public static final String DRAMA_STREET_FIELD = "street";
+	public static final String DRAMA_NUMBER_FIELD = "number";
+	public static final String DRAMA_PLACE_FIELD = "place";
+	public static final String DRAMA_ID_FIELD = "drama_id";
+	public static final String DRAMA_SCRIPT_FIELD = "script";
+	
 	
 	public enum Types {
 		POI_RESIDENCE, ROOM;
@@ -36,6 +45,7 @@ public class Place {
 	String description = null;
 	Types type = null;
 	HashMap<String,Place> connections = null;
+	HashMap<String,String> scripts = null;
 	
 	public Place(String fullURL, String name, String description, String type){
 		this.fullURL = fullURL;
@@ -43,6 +53,7 @@ public class Place {
 		this.description = description;
 		this.type = Types.valueOf(type);
 		connections = new HashMap<String,Place>();
+		scripts = new HashMap<String,String>();
 	}
 	
 	public void connect(String where, Place what){		
@@ -58,6 +69,7 @@ public class Place {
 		//TODO modularize the JSON data in a configurable manner
 		result += "{\"name\":\""+this.name+"\",";
 		result += "\"description\":\""+this.description+"\",";
+		result += "\"url\":\""+this.getFullURL()+"\",";
 		result += "\"connections\":{";
 		for(Entry<String, Place> p: connections.entrySet()){
 			result += "\""+p.getKey()+"\":{";
@@ -68,6 +80,20 @@ public class Place {
 		}
 		result += "}}";
 		return result;
+	}
+
+	public void addScript(String drama, String script) {
+		scripts.put(drama, script);
+	}
+
+	public String getScript(String drama) {
+		String result = scripts.get(drama);
+		if(result == null){
+			return "{}";
+		}
+		else{
+			return result;
+		}
 	}
 
 }

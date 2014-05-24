@@ -23,16 +23,28 @@ public class PlaceCache implements CacheInterface {
 
 			ResultSet all = Database.query("SELECT * FROM " + Place.PLACE_TABLE);
 			while (all != null && all.next()) {
+				String street = all.getString(Place.STREET_FIELD);
+				int number = all.getInt(Place.NUMBER_FIELD);
+				String place =  all.getString(Place.URL_FIELD);
 				String fullURL = "";
-				fullURL += all.getString(Place.STREET_FIELD);
-				fullURL += "/"+all.getString(Place.NUMBER_FIELD);
-				fullURL += "/"+all.getString(Place.URL_FIELD);
+				fullURL += street;
+				fullURL += "/"+number;
+				fullURL += "/"+place;
 				if(!fullURL.endsWith("/")) fullURL += "/";
 				Place p = new Place(fullURL,
 									all.getString(Place.NAME_FIELD),
 									all.getString(Place.DESCRIPTION_FIELD),
 									all.getString(Place.TYPE_FIELD));
 				places.put(fullURL, p);
+				
+				ResultSet scripts = Database.query("SELECT * FROM " + Place.DRAMA_TABLE+
+						" WHERE "+Place.DRAMA_STREET_FIELD+" = \""+street+"\""+
+						" AND "+Place.DRAMA_NUMBER_FIELD+" = \""+number+"\""+
+						" AND "+Place.DRAMA_PLACE_FIELD+" = \""+place+"\"");
+				while(scripts != null && scripts.next()){
+					p.addScript(scripts.getString(Place.DRAMA_ID_FIELD),scripts.getString(Place.DRAMA_SCRIPT_FIELD));
+				}
+				scripts.close();
 			}
 			if(all != null) all.close();
 			

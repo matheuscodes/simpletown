@@ -56,7 +56,8 @@ public class Main extends HttpServlet {
 		HTMLPrinter.openMainContainer(response, s.getUser().getLead().getName()+" "+s.getUser().getLead().getLastName(), null);
 
 		
-		
+		HTMLPrinter.windowWrap("Dialog", "dialog", "", response);
+		HTMLPrinter.windowWrap("People in the room...", "place_citizens", "", response);
 		HTMLPrinter.windowWrap("Go through...", "place_navigation", "", response);
 		
 		String content = "<p onclick='controller.moveTo(\"main-st/1/\")'> START </p>";

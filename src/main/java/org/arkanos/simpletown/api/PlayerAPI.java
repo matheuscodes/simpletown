@@ -68,6 +68,19 @@ public class PlayerAPI extends HttpServlet {
 				//TODO if there is no place defined citizen is at city level.
 			}
 		}
+		else if(reference.startsWith("/script/")){
+			reference = reference.replace("/script/", "");
+			Place selected = CacheServer.getPlaces().getPlace(reference);
+			if(selected != null){
+				response.getWriter().println(selected.getScript(s.getUser().getDrama()));
+				return;
+			}
+			else{
+				response.getWriter().println("{}");
+				//response.sendError(404,"Place for script not found.");
+				return;
+			}
+		}
 		
 		response.sendError(404, "Player request not found.");
 	}

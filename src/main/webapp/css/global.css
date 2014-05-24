@@ -40,3 +40,19 @@
 	margin: 1% 1%;
 	width: 98%;
 }
+
+.dialog p{
+	min-height: 1.3em;
+	vertical-align: middle;
+	padding: 1%;
+	margin: 1%;
+	text-align: left;
+}
+
+.dialog p.reply{
+	text-align: right;
+}
+
+.dialog p.reply:hover{
+	font-weight:bold;
+}
