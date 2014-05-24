@@ -57,7 +57,7 @@ public class SessionServer {
 	/** upper case 2 **/
 	'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 	/** extras **/
-	'Å', 'Ø' };
+	'-', '_' };
 
 	private static HashMap<String, Session> getActiveSessions() {
 		if (active_sessions == null)
