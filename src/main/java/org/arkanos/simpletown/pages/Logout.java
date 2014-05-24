@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.arkanos.simpletown.caches.CacheServer;
 import org.arkanos.simpletown.controllers.CookieHandler;
 import org.arkanos.simpletown.controllers.HTMLPrinter;
 import org.arkanos.simpletown.controllers.HTTPHandler;
@@ -26,7 +27,7 @@ public class Logout extends HttpServlet {
 	 */
 	public Logout() {
 		super();
-		// TODO Auto-generated constructor stub
+		CacheServer.buildAll();
 	}
 
 	/**

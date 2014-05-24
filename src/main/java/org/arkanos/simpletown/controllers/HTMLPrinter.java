@@ -45,7 +45,7 @@ public class HTMLPrinter {
 		window += "<div class='window_title'>";
 		window += title;
 		window += "</div>";
-		window += "<div class='window " + content_class + "'>";
+		window += "<div class='window " + content_class + "' id='" + content_class + "_id'>";
 		window += content;
 		window += "</div></div>";
 		response.getWriter().println(window);
@@ -54,8 +54,11 @@ public class HTMLPrinter {
 	public static String basicHTMLHeaders() {
 		String head = new String();
 		head += "<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />";
-		head += "<link href='./css/general.css' rel='stylesheet' type='text/css'>";
-		head += "<link href='./css/global.css' rel='stylesheet' type='text/css'>";
+		head += "<link href='css/general.css' rel='stylesheet' type='text/css'>";
+		head += "<link href='css/global.css' rel='stylesheet' type='text/css'>";
+		//TODO scripts are not required in error, login and logout
+		head += "<script type='text/javascript' src='js/SimpletownEngine.js'></script>";
+		head += "<script type='text/javascript' src='js/SimpletownUIController.js'></script>";
 		return head;
 	}
 

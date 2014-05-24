@@ -3,7 +3,6 @@ package org.arkanos.simpletown.caches;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 import org.arkanos.simpletown.controllers.Database;
 import org.arkanos.simpletown.logic.Place;
@@ -24,25 +23,45 @@ public class PlaceCache implements CacheInterface {
 
 			ResultSet all = Database.query("SELECT * FROM " + Place.PLACE_TABLE);
 			while (all != null && all.next()) {
-				Place p = new Place(all.getInt(Place.ID_FIELD),
+				String fullURL = "";
+				fullURL += all.getString(Place.STREET_FIELD);
+				fullURL += "/"+all.getString(Place.NUMBER_FIELD);
+				fullURL += "/"+all.getString(Place.URL_FIELD);
+				if(!fullURL.endsWith("/")) fullURL += "/";
+				Place p = new Place(fullURL,
 									all.getString(Place.NAME_FIELD),
 									all.getString(Place.DESCRIPTION_FIELD),
 									all.getString(Place.TYPE_FIELD));
-				places.put(all.getString(Place.ID_FIELD), p);
+				places.put(fullURL, p);
 			}
-			all.close();
+			if(all != null) all.close();
 			
-			for(Entry<String, Place> p: places.entrySet()){
-				p.getValue();
-				ResultSet connections = Database.query("SELECT * FROM " + Place.CONNECTION_TABLE + " WHERE " + Place.CONNECTION_PLACE_ID_FIELD + "=" + p.getValue().getID());
-				while (connections != null && connections.next()) {
-					Place next = places.get(connections.getInt(Place.CONNECTION_NEXT_ID_FIELD));
-					p.getValue().connect(connections.getString(Place.CONNECTION_NAME_FIELD), next);
+			ResultSet connections = Database.query("SELECT "+Place.CONNECTION_NAME_FIELD+", CONCAT("+
+											Place.CONNECTION_STREET_FIELD+",\"/\","+
+											Place.CONNECTION_NUMBER_FIELD+",\"/\","+
+											Place.CONNECTION_PLACE_FIELD+") AS current, CONCAT("+
+											Place.CONNECTION_STREET_NEXT_FIELD+",\"/\","+
+											Place.CONNECTION_NUMBER_NEXT_FIELD+",\"/\","+
+											Place.CONNECTION_PLACE_NEXT_FIELD+") AS next, "+
+											Place.CONNECTION_BILATERAL +
+											" FROM " + Place.CONNECTION_TABLE);
+			while (connections != null && connections.next()) {
+				String current = connections.getString("current");
+				if(!current.endsWith("/")) current += "/";
+				Place from = places.get(current);
+				String next = connections.getString("next");
+				if(!next.endsWith("/")) next += "/";
+				Place to = places.get(next);
+				//FIXME NPE in "from" whenever there are cache building issues.
+				from.connect(connections.getString(Place.CONNECTION_NAME_FIELD), to);
+				if(connections.getBoolean(Place.CONNECTION_BILATERAL)){
+					to.connect(connections.getString(Place.CONNECTION_NAME_FIELD), from);
 				}
-				connections.close();
 			}
+			if(connections != null) connections.close();
+			
 			return true;
-
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,6 +78,13 @@ public class PlaceCache implements CacheInterface {
 	public PlaceCache() {
 		super();
 		build();
+	}
+
+	public Place getPlace(String reference) {
+		if(places != null){
+			return places.get(reference);
+		}
+		return null;
 	}
 
 }
