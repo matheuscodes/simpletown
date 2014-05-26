@@ -41,7 +41,7 @@ public class HTMLPrinter {
 
 	public static void windowWrap(String title, String content_class, String content, HttpServletResponse response) throws IOException {
 		String window = new String();
-		window += "<div class='window_block " + content_class + "_block'>";
+		window += "<div class='window_block' id='" + content_class + "_block'>";
 		window += "<div class='window_title'>";
 		window += title;
 		window += "</div>";

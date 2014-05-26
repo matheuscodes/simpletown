@@ -18,27 +18,55 @@
 	fill-opacity:0.5;
 }
 
-.place_navigation_block {
+#place_navigation_block {
 	float: right;
 	margin: 1% 1%;
 	width: 33%;
 }
 
-.place_navigation_block p{
+.place_navigation p{
 	height: 1.1em;
 	vertical-align: middle;
 	padding: 1%;
 	margin: 1%;
+	cursor:pointer;
 }
 
-.place_navigation_block p:hover{
+.place_navigation p:hover{
 	font-weight:bold;
 }
 
-.citizen_story_block {
+.place_navigation .back{
+	font-style:italic;
+	font-size: 0.7em;
+}
+.place_navigation .back:hover{
+	font-weight:normal;
+	text-decoration:underline;
+}
+
+#citizen_story_block {
 	float: right;
 	margin: 1% 1%;
 	width: 98%;
+}
+
+#place_citizens_block {
+	float: right;
+	margin: 1% 1%;
+	width: 33%;
+}
+
+#place_citizens_block p{
+	height: 1.1em;
+	vertical-align: middle;
+	padding: 1%;
+	margin: 1%;
+	cursor:pointer;
+}
+
+#place_citizens_block p:hover{
+	font-weight:bold;
 }
 
 .dialog p{
@@ -47,6 +75,7 @@
 	padding: 1%;
 	margin: 1%;
 	text-align: left;
+	cursor: pointer;
 }
 
 .dialog p.reply{

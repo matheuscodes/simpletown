@@ -3,6 +3,7 @@
  */
 
 function Scenario(stage, script){
+	this.simpletownClass = 'Scenario';
 	for(var data in stage){
 		this[data] = stage[data];
 	}
@@ -39,6 +40,16 @@ function Scenario(stage, script){
 			}
 		}
 	};
+	
+	this.isSameAs = function(scenario){
+		if(scenario && scenario.url){
+			if(scenario.simpletownClass && scenario.simpletownClass != this.simpletownClass){
+				return false;
+			}
+			return this.url === scenario.url;
+		}
+		return false;
+	};
 }
 
 var URLHandler = {
@@ -60,10 +71,14 @@ var URLHandler = {
 var SimpletownEngine = {
 	scenarios: {},
 	changeScenario: function(place){
+		this.previous_scenario = this.current_scenario;
 		this.current_scenario = this.getCachedScenario(place);
 	},
 	getScenario: function(){
 		return this.current_scenario;
+	},
+	getPreviousScenario: function(){
+		return this.previous_scenario;
 	},
 	initialize: function(){
 		this.current_scenario = this.getCachedScenario();

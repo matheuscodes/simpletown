@@ -60,7 +60,7 @@ input {
 	font-size: 80%;
 }
 
-.login_block {
+#login_block {
 	margin: 0 20% 0 20%;
 	min-width: 60%;
 	max-width: 60%;
@@ -108,13 +108,13 @@ input {
 	font-size:130%;
 }
 
-.long_form_box_block {
+#long_form_box_block {
 	width: 395px;
 	margin: 5 5 5 5;
 	display: inline-block;
 }
 
-.attribute_form_box_block {
+#attribute_form_box_block {
 	width: 90px;
 	margin: 5 5 5 5;
 	display: inline-block;
