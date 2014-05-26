@@ -2,7 +2,7 @@
  * 
  */
 
-var controllerName = 'controller';
+var controller_name = 'controller';
 
 var SimpletownUIController = {
 	APIRoot: "/",
@@ -16,7 +16,7 @@ var SimpletownUIController = {
 			places.innerHTML = "";
 			//FIXME for places with no connections
 			for(var field in scenario['connections']){
-				places.innerHTML += "<p onclick='"+controllerName+".moveTo(\""+scenario['connections'][field]['url']+"\")'>..."+field+".</p>";
+				places.innerHTML += "<p onclick='"+controller_name+".moveTo(\""+scenario['connections'][field]['url']+"\")'>..."+field+".</p>";
 			}
 		}
 		
@@ -25,7 +25,7 @@ var SimpletownUIController = {
 			people.innerHTML = "";
 			if(scenario['citizens']){
 				for(var i = 0; i < scenario['citizens'].length; i++){
-					people.innerHTML += "<p onclick='"+controllerName+".talkTo(\""+i+"\")'>Talk to "+scenario['citizens'][i]['id']+".</p>";
+					people.innerHTML += "<p onclick='"+controller_name+".talkTo(\""+i+"\")'>Talk to "+scenario['citizens'][i]['id']+".</p>";
 				}
 			}
 		}
@@ -43,7 +43,7 @@ var SimpletownUIController = {
 			if(current.replies){
 				for(var i = 0; i < current.replies.length; i++){
 					dialog.innerHTML += "<p class='reply' onclick=\"" +
-					controllerName + ".replyTo(" +who+",'"+current.replies[i]+"')\" >"
+					controller_name + ".replyTo(" +who+",'"+current.replies[i]+"')\" >"
 					+person[current.replies[i]].line+"</p>";
 				}
 			}
