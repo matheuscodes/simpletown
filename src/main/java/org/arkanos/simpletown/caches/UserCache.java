@@ -19,8 +19,7 @@ public class UserCache implements CacheInterface {
 		Vector<Citizen> active = null;
 		Citizen lead = null;
 
-		public User(int id, String username, String name) {
-			this.id = id;
+		public User(String username, String name) {
 			this.username = username;
 			this.name = name;
 		}
@@ -75,8 +74,8 @@ public class UserCache implements CacheInterface {
 
 			ResultSet all = Database.query("SELECT * FROM user");
 			while (all.next()) {
-				User u = new User(all.getInt("id"), all.getString("username"), all.getString("name"));
-				users.put(all.getString("id"), u);
+				User u = new User(all.getString("username"), all.getString("name"));
+				users.put(all.getString("username"), u);
 			}
 			all.close();
 		} catch (SQLException e) {
@@ -92,8 +91,8 @@ public class UserCache implements CacheInterface {
 		return false;
 	}
 
-	public User getUser(int id) {
-		return users.get(id + "");
+	public User getUser(String username) {
+		return users.get(username);
 	}
 
 }

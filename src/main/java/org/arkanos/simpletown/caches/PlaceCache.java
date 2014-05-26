@@ -38,7 +38,7 @@ public class PlaceCache implements CacheInterface {
 				places.put(fullURL, p);
 				
 				ResultSet scripts = Database.query("SELECT * FROM " + Place.DRAMA_TABLE+
-						" WHERE "+Place.DRAMA_STREET_FIELD+" = \""+street+"\""+
+						" WHERE "+Place.DRAMA_ROAD_FIELD+" = \""+street+"\""+
 						" AND "+Place.DRAMA_NUMBER_FIELD+" = \""+number+"\""+
 						" AND "+Place.DRAMA_PLACE_FIELD+" = \""+place+"\"");
 				while(scripts != null && scripts.next()){
@@ -49,10 +49,10 @@ public class PlaceCache implements CacheInterface {
 			if(all != null) all.close();
 			
 			ResultSet connections = Database.query("SELECT "+Place.CONNECTION_NAME_FIELD+", CONCAT("+
-											Place.CONNECTION_STREET_FIELD+",\"/\","+
+											Place.CONNECTION_ROAD_FIELD+",\"/\","+
 											Place.CONNECTION_NUMBER_FIELD+",\"/\","+
 											Place.CONNECTION_PLACE_FIELD+") AS current, CONCAT("+
-											Place.CONNECTION_STREET_NEXT_FIELD+",\"/\","+
+											Place.CONNECTION_ROAD_NEXT_FIELD+",\"/\","+
 											Place.CONNECTION_NUMBER_NEXT_FIELD+",\"/\","+
 											Place.CONNECTION_PLACE_NEXT_FIELD+") AS next, "+
 											Place.CONNECTION_BILATERAL +

@@ -4,24 +4,22 @@ package org.arkanos.simpletown.logic;
 public class Citizen {
 	
 	static public final String TABLE = "citizen";
-	static public final String ASPECTS_TABLE = "citizen_aspects";
-	public static final String USER_TABLE = "citizen_user";
 	
 	static public final String ID_FIELD = "id";
-	static public final String USER_ID_FIELD = "user_id";
+	static public final String USERNAME_FIELD = "username";
 	static public final String NAME_FIELD = "name";
 	static public final String LAST_NAME_FIELD = "last_name";
 	static public final String LEAD_ROLE_FIELD = "lead_role";
 	
-	static public final String ASPECTS_ID_FIELD = "citizen_id";
-	static public final String ASPECTS_BEHAVIOUR_FIELD = "behaviour";
-	static public final String ASPECTS_STATE_OF_MIND_FIELD = "state_of_mind";
-	static public final String ASPECTS_BONDING_FIELD = "bonding";
+	public static final String PLAYING_TABLE = "citizen_playing";
 	
-	static public final String USER_CITIZEN_ID_FIELD = "citizen_id";
-	static public final String USER_STREET_FIELD = "street";
-	static public final String USER_NUMBER_FIELD = "number";
-	static public final String USER_PLACE_FIELD = "place";
+	static public final String PLAYING_BEHAVIOUR_FIELD = "behaviour";
+	static public final String PLAYING_STATE_OF_MIND_FIELD = "state_of_mind";
+	static public final String PLAYING_BONDING_FIELD = "bonding";
+	static public final String PLAYING_CITIZEN_ID_FIELD = "citizen_id";
+	static public final String PLAYING_ROAD_FIELD = "road";
+	static public final String PLAYING_NUMBER_FIELD = "number";
+	static public final String PLAYING_PLACE_FIELD = "place";
 	
 	
 	public enum Attribute {

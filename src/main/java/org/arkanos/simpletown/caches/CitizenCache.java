@@ -41,10 +41,8 @@ public class CitizenCache implements CacheInterface {
 			count.close();
 			
 			ResultSet all = Database.query("SELECT * FROM "+Citizen.TABLE+
-					" LEFT JOIN "+Citizen.ASPECTS_TABLE+" a "+
-					" ON "+Citizen.ID_FIELD+" = a."+Citizen.ASPECTS_ID_FIELD+
-					" LEFT JOIN "+Citizen.USER_TABLE+" u "+
-					" ON "+Citizen.ID_FIELD+" = u."+Citizen.USER_CITIZEN_ID_FIELD);
+					" LEFT JOIN "+Citizen.PLAYING_TABLE+" "+
+					" ON "+Citizen.ID_FIELD+" = "+Citizen.PLAYING_CITIZEN_ID_FIELD);
 			
 			while (all.next()) {
 				Citizen newone = null;
@@ -61,23 +59,23 @@ public class CitizenCache implements CacheInterface {
 				attributes[Attribute.WITS.ordinal()] = all.getByte(Attribute.WITS.toString());
 				newone = new Citizen(all.getInt(Citizen.ID_FIELD), name, last_name, attributes);
 				citizens.put(all.getString(Citizen.ID_FIELD), newone);
-				byte behavior = all.getByte(Citizen.ASPECTS_BEHAVIOUR_FIELD);
-				byte state_of_mind = all.getByte(Citizen.ASPECTS_STATE_OF_MIND_FIELD);
-				byte bonding = all.getByte(Citizen.ASPECTS_BONDING_FIELD);
+				byte behavior = all.getByte(Citizen.PLAYING_BEHAVIOUR_FIELD);
+				byte state_of_mind = all.getByte(Citizen.PLAYING_STATE_OF_MIND_FIELD);
+				byte bonding = all.getByte(Citizen.PLAYING_BONDING_FIELD);
 				newone.setAspects(behavior, state_of_mind, bonding);
 				// TODO optimize, avoid the "gets" and use variable
-				if (all.getInt(Citizen.USER_ID_FIELD) != 0) {
-					CacheServer.getUsers().getUser(all.getInt(Citizen.USER_ID_FIELD)).addCitizen(newone);
-					String address = all.getString(Citizen.USER_STREET_FIELD);
-					address += "/"+all.getString(Citizen.USER_NUMBER_FIELD);
-					address += "/"+all.getString(Citizen.USER_PLACE_FIELD);
+				if (all.getString(Citizen.USERNAME_FIELD) != null) {
+					CacheServer.getUsers().getUser(all.getString(Citizen.USERNAME_FIELD)).addCitizen(newone);
+					String address = all.getString(Citizen.PLAYING_ROAD_FIELD);
+					address += "/"+all.getString(Citizen.PLAYING_NUMBER_FIELD);
+					address += "/"+all.getString(Citizen.PLAYING_PLACE_FIELD);
 					if(!address.endsWith("/")) address += "/";
 					Place where = CacheServer.getPlaces().getPlace(address);
 					if(where != null){
 						newone.setPlace(where);
 					}
 					if(all.getBoolean(Citizen.LEAD_ROLE_FIELD)){
-						CacheServer.getUsers().getUser(all.getInt(Citizen.USER_ID_FIELD)).setLead(newone);
+						CacheServer.getUsers().getUser(all.getString(Citizen.USERNAME_FIELD)).setLead(newone);
 					}
 				}
 			}

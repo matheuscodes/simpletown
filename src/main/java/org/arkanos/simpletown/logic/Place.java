@@ -18,17 +18,17 @@ public class Place {
 	static public final String CONNECTION_TABLE = "place_connection";
 	
 	static public final String CONNECTION_NAME_FIELD = "connection_name";
-	static public final String CONNECTION_STREET_FIELD = "street";
+	static public final String CONNECTION_ROAD_FIELD = "road";
 	static public final String CONNECTION_NUMBER_FIELD = "number";
 	static public final String CONNECTION_PLACE_FIELD = "place";
-	static public final String CONNECTION_STREET_NEXT_FIELD = "street_next";
+	static public final String CONNECTION_ROAD_NEXT_FIELD = "road_next";
 	static public final String CONNECTION_NUMBER_NEXT_FIELD = "number_next";
 	static public final String CONNECTION_PLACE_NEXT_FIELD = "place_next";
 	static public final String CONNECTION_BILATERAL = "bilateral";
 
 	public static final String DRAMA_TABLE = "drama_place";
 	
-	public static final String DRAMA_STREET_FIELD = "street";
+	public static final String DRAMA_ROAD_FIELD = "road";
 	public static final String DRAMA_NUMBER_FIELD = "number";
 	public static final String DRAMA_PLACE_FIELD = "place";
 	public static final String DRAMA_ID_FIELD = "drama_id";
