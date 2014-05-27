@@ -15,6 +15,9 @@ import org.arkanos.simpletown.controllers.HTTPHandler;
 import org.arkanos.simpletown.controllers.SessionServer;
 import org.arkanos.simpletown.controllers.SessionServer.Session;
 import org.arkanos.simpletown.logic.Place;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Servlet implementation class PlayerAPI
@@ -57,9 +60,10 @@ public class PlayerAPI extends HttpServlet {
 		reference = reference.replace("/player","");
 		
 		if(reference.startsWith("/scenario/")){
+			//FIXME if there is no lead citizen
 			Place selected = s.getUser().getLead().getPlace();
 			if(selected != null){
-				response.getWriter().println(selected.toJSON());
+				response.getWriter().print(selected.toJSON());
 				return;
 			}
 			else{
@@ -72,11 +76,18 @@ public class PlayerAPI extends HttpServlet {
 			reference = reference.replace("/script/", "");
 			Place selected = CacheServer.getPlaces().getPlace(reference);
 			if(selected != null){
-				response.getWriter().println(selected.getScript(s.getUser().getDrama()));
+				//TODO move drama to citizen, not user
+				String saved = selected.getSavedGame(s.getUser().getLead().getID()+"_"+s.getUser().getDrama());
+				if(saved != null){
+					response.getWriter().print(saved);
+				}
+				else{
+					response.getWriter().print(selected.getScript(s.getUser().getDrama()));
+				}
 				return;
 			}
 			else{
-				response.getWriter().println("{}");
+				response.getWriter().print("{}");
 				//response.sendError(404,"Place for script not found.");
 				return;
 			}
@@ -92,20 +103,38 @@ public class PlayerAPI extends HttpServlet {
 		
 		HTTPHandler.setUpAPIHeaders(response);
 		
-		String place_reference = request.getRequestURI().toString();
-		place_reference = place_reference.substring(place_reference.lastIndexOf("/places/"));
-		//TODO maybe not required
-		if(!place_reference.endsWith("/")) place_reference += "/";
-		place_reference = place_reference.replace("/places/","");
+		String reference = request.getRequestURI().toString();
+		if(!reference.endsWith("/")) reference += "/";
+		reference = reference.substring(reference.lastIndexOf("/player/"));
+		reference = reference.replace("/player","");
+		JSONObject jo = null;
+		try {
+			JSONParser jp = new JSONParser();
+			jo = (JSONObject) jp.parse(request.getReader());
+		} catch (ParseException e) {
+			//TODO verify code error
+			response.sendError(400, "Something corrupted the data to be saved.");
+			return;
+		}
 		
-		Place selected = CacheServer.getPlaces().getPlace(place_reference);
-		if(selected != null){
-			//response.getWriter().println(selected.toJSON());
-			//TODO
-		}
-		else{
-			//FIXME redirect messes up CSS
-			response.sendError(404, "Place not found.");
-		}
+		//TODO write the saved games in the DB
+		//TODO save citizen in a place
+		
+		/*
+		Place selected = CacheServer.getPlaces().getPlace(reference);
+		if(reference.startsWith("/scenario/")){
+			Place selected = s.getUser().getLead().getPlace();
+			if(selected != null){
+				response.getWriter().print(selected.toJSON());
+				return;
+			}
+			else{
+				response.sendError(500);
+				return;
+				//TODO if there is no place defined citizen is at city level.
+			}
+		}*/
+		
+		response.sendError(404, "Player request not found.");
 	}
 }

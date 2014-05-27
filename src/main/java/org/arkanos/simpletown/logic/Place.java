@@ -34,10 +34,33 @@ public class Place {
 	public static final String DRAMA_ID_FIELD = "drama_id";
 	public static final String DRAMA_SCRIPT_FIELD = "script";
 	
+	static public final String SAVE_TABLE = "citizen_place_save";
+	
+	static public final String SAVE_ROAD_FIELD = "road";
+	static public final String SAVE_NUMBER_FIELD = "number";
+	static public final String SAVE_PLACE_FIELD = "place";
+	static public final String SAVE_TIME_FIELD = "saved_on";
+	static public final String SAVE_DRAMA_FIELD = "drama_id";
+	static public final String SAVE_STATE_FIELD = "state";
+	public static final String SAVE_CITIZEN_FIELD = "citizen_id";
 	
 	public enum Types {
 		POI_RESIDENCE, ROOM;
 	};
+	
+	public class SavedGame{
+		long timestamp = 0;
+		String state = null;
+		
+		public SavedGame(long timestamp,String state){
+			this.timestamp = timestamp;
+			this.state = state;
+		}
+		
+		public String toJSON(){
+			return "{\"saved_on\":"+timestamp+",\"state\":\""+state+"\"}";
+		}
+	}
 		
 	/* *** Common Parts *** */
 	String fullURL = null;
@@ -46,6 +69,7 @@ public class Place {
 	Types type = null;
 	HashMap<String,Place> connections = null;
 	HashMap<String,String> scripts = null;
+	HashMap<String,SavedGame> saves = null;
 	
 	public Place(String fullURL, String name, String description, String type){
 		this.fullURL = fullURL;
@@ -93,6 +117,20 @@ public class Place {
 		}
 		else{
 			return result;
+		}
+	}
+	
+	public void addSaveGame(String citizen_drama, long timestamp, String state) {
+		saves.put(citizen_drama, new SavedGame(timestamp,state));
+	}
+
+	public String getSavedGame(String citizen_drama) {
+		SavedGame result = saves.get(citizen_drama);
+		if(result == null){
+			return "{}";
+		}
+		else{
+			return result.toJSON();
 		}
 	}
 

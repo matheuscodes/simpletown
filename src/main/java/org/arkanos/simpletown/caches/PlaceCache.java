@@ -72,8 +72,32 @@ public class PlaceCache implements CacheInterface {
 			}
 			if(connections != null) connections.close();
 			
-			return true;
 			
+			ResultSet saves = Database.query("SELECT CONCAT("+
+					Place.SAVE_ROAD_FIELD+",\"/\","+
+					Place.SAVE_NUMBER_FIELD+",\"/\","+
+					Place.SAVE_PLACE_FIELD+") AS address, "+
+					Place.SAVE_TIME_FIELD + ","+
+					Place.SAVE_DRAMA_FIELD + ","+
+					Place.SAVE_CITIZEN_FIELD + ","+
+					Place.SAVE_STATE_FIELD + 
+					" FROM " + Place.SAVE_TABLE);
+			while (saves != null && saves.next()) {
+				String address = saves.getString("current");
+				
+				if(!address.endsWith("/")) address += "/";
+				long when = saves.getDate(Place.SAVE_TIME_FIELD).getTime();
+				Place where = places.get(address);
+				String what = saves.getString(Place.SAVE_STATE_FIELD);
+				
+				if(where != null){
+					where.addSaveGame(saves.getString(Place.SAVE_CITIZEN_FIELD)+"_"+saves.getString(Place.SAVE_DRAMA_FIELD), when, what);
+				}
+			}
+			if(saves != null) saves.close();
+			
+			
+			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
