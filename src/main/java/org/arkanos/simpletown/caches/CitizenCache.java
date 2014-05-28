@@ -8,6 +8,7 @@ import org.arkanos.simpletown.controllers.Database;
 import org.arkanos.simpletown.logic.Citizen;
 import org.arkanos.simpletown.logic.Citizen.Attribute;
 import org.arkanos.simpletown.logic.Place;
+import org.arkanos.simpletown.logic.Place.Address;
 
 public class CitizenCache implements CacheInterface {
 
@@ -95,5 +96,18 @@ public class CitizenCache implements CacheInterface {
 		}
 		return results;
 	}*/
+
+	public void moveCitizen(Citizen lead, Place where) {
+		Address a = where.getAddress();
+		boolean executed = Database.execute(
+						"UPDATE "+Citizen.PLAYING_TABLE+" SET "+
+						Citizen.PLAYING_ROAD_FIELD + " =  \"" + a.road + "\","+
+						Citizen.PLAYING_NUMBER_FIELD + " =  " + a.number + ","+
+						Citizen.PLAYING_PLACE_FIELD + " =  \"" + a.place + "\" "+
+						"WHERE "+ Citizen.PLAYING_CITIZEN_ID_FIELD + " = "+lead.getID());
+		if(executed){
+			lead.setPlace(where);
+		}
+	}
 
 }

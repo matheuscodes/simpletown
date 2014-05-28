@@ -58,7 +58,18 @@ public class Place {
 		}
 		
 		public String toJSON(){
-			return "{\"saved_on\":"+timestamp+",\"state\":\""+state+"\"}";
+			return "{\"saved_on\":"+timestamp+",\"state\":"+state+"}";
+		}
+	}
+	
+	public class Address{
+		public String road;
+		public int number;
+		public String place;
+		public Address(String road, int number, String place){
+			this.road = road;
+			this.number = number;
+			this.place = place;
 		}
 	}
 		
@@ -67,6 +78,7 @@ public class Place {
 	String name = null;
 	String description = null;
 	Types type = null;
+	Address address = null;
 	HashMap<String,Place> connections = null;
 	HashMap<String,String> scripts = null;
 	HashMap<String,SavedGame> saves = null;
@@ -78,6 +90,7 @@ public class Place {
 		this.type = Types.valueOf(type);
 		connections = new HashMap<String,Place>();
 		scripts = new HashMap<String,String>();
+		saves = new HashMap<String,SavedGame>();
 	}
 	
 	public void connect(String where, Place what){		
@@ -113,6 +126,7 @@ public class Place {
 	public String getScript(String drama) {
 		String result = scripts.get(drama);
 		if(result == null){
+			//FIXME this is no valid JSON.
 			return "{}";
 		}
 		else{
@@ -127,11 +141,19 @@ public class Place {
 	public String getSavedGame(String citizen_drama) {
 		SavedGame result = saves.get(citizen_drama);
 		if(result == null){
-			return "{}";
+			return null;
 		}
 		else{
 			return result.toJSON();
 		}
+	}
+	
+	public void setAddress(String road, int number, String place){
+		this.address = new Address(road,number,place);
+	}
+	
+	public Address getAddress(){
+		return this.address;
 	}
 
 }

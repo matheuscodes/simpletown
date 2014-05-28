@@ -33,20 +33,19 @@ public class Login extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Cookie session_cookie = CookieHandler.searchCookie(CookieHandler.SIMPLETOWN_SESSION, request.getCookies());
-		if (session_cookie != null) {
-			Session s = SessionServer.getSession(session_cookie.getValue());
-			if (s != null) {
-				response.sendRedirect("Main");
-			}
-		}
-		
 		HTTPHandler.setUpUIHeaders(response);
 
+		Session s = SessionServer.getSession(request,response);
+		
+		if (s != null) {
+			response.sendRedirect("Main");
+			return;
+		}
+		
 		HTMLPrinter.openHTML(response);
-
+		
 		HTMLPrinter.openMainContainer(response, "Login", null);
-
+		
 		String content = new String();
 		content += "<form action='' method='post' name='login_form'>";
 		content += "<table align='center'>";

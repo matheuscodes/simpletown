@@ -124,9 +124,9 @@ public class Database {
 	static public String sanitizeString(String s) {
 		if (s == null) return null;
 		//TODO this is a basic clean, needs improvement.
-		s.replace('\"', ' ');
-		s.replace('`', ' ');
-		s.replace(';', ' ');
+		s = s.replace("\"", "\\\"");
+		s = s.replace('`', ' ');
+		s = s.replace(';', ' ');
 		return s;
 	}
 }

@@ -35,12 +35,13 @@ public class Logout extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Session session = SessionServer.checkLogin(request, response);
+		HTTPHandler.setUpUIHeaders(response);
+		
+		Session session = SessionServer.getSession(request, response);
 		if (session != null) {
 			SessionServer.killSession(session.getKey());
 		}
 		
-		HTTPHandler.setUpUIHeaders(response);
 		
 		CookieHandler.deleteCookies(request, response);
 

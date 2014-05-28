@@ -20,6 +20,7 @@ public class Citizen {
 	static public final String PLAYING_ROAD_FIELD = "road";
 	static public final String PLAYING_NUMBER_FIELD = "number";
 	static public final String PLAYING_PLACE_FIELD = "place";
+	static public final String PLAYING_DRAMA_FIELD = "drama_id";
 	
 	
 	public enum Attribute {
@@ -53,10 +54,10 @@ public class Citizen {
 	byte state_of_mind = 0;
 	byte bonding = 0;
 	private Place place;
-
-	//Vector<Skill> skills;
+	private String drama = "null";
 
 	public Citizen(int id, String name, String last_name, byte[] attributes) {
+		this.id = id;
 		this.name = name;
 		this.last_name = last_name;
 		this.attributes = attributes;
@@ -108,33 +109,21 @@ public class Citizen {
 		return attributes;
 	}
 
-	public String describeMood() {
-		if (behavior > MAX_ASPECT_VALUE / 2) {
-			return "patiently";
-		}
-		if (state_of_mind > MAX_ASPECT_VALUE / 2) {
-			return "calmly";
-		}
-		if (bonding > MAX_ASPECT_VALUE / 2) {
-			return "warmly";
-		}
-		if (behavior < MIN_ASPECT_VALUE / 2) {
-			return "impatiently";
-		}
-		if (state_of_mind < MIN_ASPECT_VALUE / 2) {
-			return "desperately";
-		}
-		if (bonding < MIN_ASPECT_VALUE / 2) {
-			return "coldly";
-		}
-		return "";
-	}
-
 	public void setPlace(Place where) {
 		this.place = where;
 	}
 	
 	public Place getPlace(){
 		return this.place;
+	}
+	
+	public void setDrama(String id){
+		this.drama = id;
+	}
+	
+	public String getDrama(){
+		//TODO: temporary
+		//return this.drama;
+		return "1";
 	}
 }

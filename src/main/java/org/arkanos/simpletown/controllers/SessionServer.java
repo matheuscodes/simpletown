@@ -1,5 +1,6 @@
 package org.arkanos.simpletown.controllers;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -92,31 +93,21 @@ public class SessionServer {
 		return result;
 	}
 
-	public static Session getSession(String key) {
-		return getActiveSessions().get(key);
-	}
-	
-	static public Session checkLogin(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			Cookie session_cookie = CookieHandler.searchCookie(CookieHandler.SIMPLETOWN_SESSION, request.getCookies());
-			if (session_cookie != null) {
-				Session s = SessionServer.getSession(session_cookie.getValue());
-				if (s == null) {
-					// TODO try to add error to headers
-					// response.addHeader("simpletown-error", "login1");
-					//response.sendRedirect("Login?error=4");
-				}
-				return s;
-			} else {
-				//response.sendRedirect("Login");
+	public static Session getSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		Cookie session_cookie = CookieHandler.searchCookie(CookieHandler.SIMPLETOWN_SESSION, request.getCookies());
+		Session s = null;
+		if (session_cookie != null) {
+			s = getActiveSessions().get(session_cookie.getValue());
+			if (s == null) {
+				//response.sendError(403,"Invalid session.");
 				return null;
 			}
-		} catch (/*IO*/Exception e) {
-			// TODO generic exception due to comments, remove.
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}
+		else{
+			//response.sendError(403,"Not authenticated.");
 			return null;
 		}
+		return s; 
 	}
 	
 	static private void registerLogin(String username, String ip, String agent, boolean success) {

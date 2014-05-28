@@ -65,14 +65,30 @@ var URLHandler = {
 	},
 	getPlayerPlace: function(){
 		return this.player_root + this.scenario;
+	},
+	getPlayerMove: function(place){
+		return this.player_root + place;
 	}
 };
 
 var SimpletownEngine = {
 	scenarios: {},
 	changeScenario: function(place){
-		this.previous_scenario = this.current_scenario;
+		if(this.current_scenario){
+			this.previous_scenario = this.current_scenario;
+
+			var connection = new XMLHttpRequest();
+			connection.open("PUT",URLHandler.getScript(this.current_scenario.url),false);
+			data = JSON.stringify(this.current_scenario);
+			//TODO send data with proper thing... without size limits
+			connection.setRequestHeader("Content-Type", "application/x-json");
+			connection.setRequestHeader("Content-Length", data.length);
+			connection.send(data);
+		}
 		this.current_scenario = this.getCachedScenario(place);
+		connection = new XMLHttpRequest();
+		connection.open("PUT",URLHandler.getPlayerMove(this.current_scenario.url),false);
+		connection.send();
 	},
 	getScenario: function(){
 		return this.current_scenario;
@@ -100,7 +116,12 @@ var SimpletownEngine = {
 		if(stage && !this.scenarios[stage.url]){
 			connection.open("GET",URLHandler.getScript(stage.url),false);
 			connection.send();
-			var script = JSON.parse(connection.responseText);
+			var loaded = JSON.parse(connection.responseText);
+			var script;
+			if(loaded.saved_on){
+				script = loaded.state;
+				script.saved_on = loaded.saved_on;
+			}
 			
 			this.scenarios[stage.url] = new Scenario(stage,script);
 			return this.scenarios[stage.url];

@@ -49,11 +49,6 @@ public class UserCache implements CacheInterface {
 		public String getName() {
 			return name;
 		}
-
-		public String getDrama() {
-			return "1";
-		}
-
 	}
 
 	HashMap<String, User> users = null;

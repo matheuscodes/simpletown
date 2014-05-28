@@ -4,8 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+import org.arkanos.simpletown.caches.UserCache.User;
 import org.arkanos.simpletown.controllers.Database;
+import org.arkanos.simpletown.logic.Citizen;
 import org.arkanos.simpletown.logic.Place;
+import org.arkanos.simpletown.logic.Place.Address;
 
 public class PlaceCache implements CacheInterface {
 	
@@ -23,11 +26,11 @@ public class PlaceCache implements CacheInterface {
 
 			ResultSet all = Database.query("SELECT * FROM " + Place.PLACE_TABLE);
 			while (all != null && all.next()) {
-				String street = all.getString(Place.STREET_FIELD);
+				String road = all.getString(Place.STREET_FIELD);
 				int number = all.getInt(Place.NUMBER_FIELD);
 				String place =  all.getString(Place.URL_FIELD);
 				String fullURL = "";
-				fullURL += street;
+				fullURL += road;
 				fullURL += "/"+number;
 				fullURL += "/"+place;
 				if(!fullURL.endsWith("/")) fullURL += "/";
@@ -35,10 +38,11 @@ public class PlaceCache implements CacheInterface {
 									all.getString(Place.NAME_FIELD),
 									all.getString(Place.DESCRIPTION_FIELD),
 									all.getString(Place.TYPE_FIELD));
+				p.setAddress(road, number, place);
 				places.put(fullURL, p);
 				
 				ResultSet scripts = Database.query("SELECT * FROM " + Place.DRAMA_TABLE+
-						" WHERE "+Place.DRAMA_ROAD_FIELD+" = \""+street+"\""+
+						" WHERE "+Place.DRAMA_ROAD_FIELD+" = \""+road+"\""+
 						" AND "+Place.DRAMA_NUMBER_FIELD+" = \""+number+"\""+
 						" AND "+Place.DRAMA_PLACE_FIELD+" = \""+place+"\"");
 				while(scripts != null && scripts.next()){
@@ -83,7 +87,7 @@ public class PlaceCache implements CacheInterface {
 					Place.SAVE_STATE_FIELD + 
 					" FROM " + Place.SAVE_TABLE);
 			while (saves != null && saves.next()) {
-				String address = saves.getString("current");
+				String address = saves.getString("address");
 				
 				if(!address.endsWith("/")) address += "/";
 				long when = saves.getDate(Place.SAVE_TIME_FIELD).getTime();
@@ -121,6 +125,46 @@ public class PlaceCache implements CacheInterface {
 			return places.get(reference);
 		}
 		return null;
+	}
+
+	public void saveGame(User who, Place where, String data) {
+		if(data == null) return;
+		
+		Address a = where.getAddress();
+		Citizen lead = who.getLead(); 
+		String query = null;
+		if(where.getSavedGame(lead.getID()+"_"+lead.getDrama()) != null){
+			query = "UPDATE "+Place.SAVE_TABLE+" SET "+
+					Place.SAVE_STATE_FIELD + " =  \"" + Database.sanitizeString(data) + "\","+
+					Place.SAVE_DRAMA_FIELD + " =  " + lead.getDrama() + ","+
+					Place.SAVE_TIME_FIELD + " =  NOW() "+ //TODO is now() required?
+					"WHERE "+ Place.SAVE_CITIZEN_FIELD + " = "+lead.getID()+
+					" AND "+Place.SAVE_ROAD_FIELD + " =  \"" + a.road + "\""+
+					" AND "+Place.SAVE_NUMBER_FIELD + " =  " + a.number +
+					" AND "+Place.SAVE_PLACE_FIELD + " =  \"" + a.place + "\"";
+		}
+		else{
+			query = "INSERT INTO " + Place.SAVE_TABLE + "("+
+					Place.SAVE_CITIZEN_FIELD+","+
+					Place.SAVE_ROAD_FIELD+","+
+					Place.SAVE_NUMBER_FIELD+","+
+					Place.SAVE_PLACE_FIELD+","+
+					Place.SAVE_STATE_FIELD+","+
+					Place.SAVE_DRAMA_FIELD+") "+
+					"VALUES ("+
+					lead.getID()+",\""+
+					a.road+"\","+
+					a.number+",\""+
+					a.place+"\",\""+
+					Database.sanitizeString(data)+"\","+
+					lead.getDrama()+")";
+		}
+		
+		boolean executed = Database.execute(query);
+		if(executed){
+			where.addSaveGame(lead.getID()+"_"+lead.getDrama(), System.currentTimeMillis(), data);
+		}
+		
 	}
 
 }

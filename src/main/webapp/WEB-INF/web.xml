@@ -6,6 +6,10 @@
     <location>/error?e=404</location>
   </error-page>
   <error-page>
+    <error-code>403</error-code>
+    <location>/login</location>
+  </error-page>
+  <error-page>
     <location>/error</location>
   </error-page>
 </web-app>

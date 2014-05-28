@@ -4,13 +4,11 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.arkanos.simpletown.caches.CacheServer;
-import org.arkanos.simpletown.controllers.CookieHandler;
 import org.arkanos.simpletown.controllers.HTMLPrinter;
 import org.arkanos.simpletown.controllers.HTTPHandler;
 import org.arkanos.simpletown.controllers.SessionServer;
@@ -35,21 +33,13 @@ public class Main extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Session s = null;
-		Cookie session_cookie = CookieHandler.searchCookie(CookieHandler.SIMPLETOWN_SESSION, request.getCookies());
-		if (session_cookie != null) {
-			s = SessionServer.getSession(session_cookie.getValue());
-			if (s == null) {
-				response.sendRedirect("login");
-				return;
-			}
-		}
-		else{
+		HTTPHandler.setUpUIHeaders(response);
+		
+		Session s = SessionServer.getSession(request,response);
+		if(s == null) {
 			response.sendRedirect("login");
 			return;
 		}
-		
-		HTTPHandler.setUpUIHeaders(response);
 
 		HTMLPrinter.openHTML(response);
 		
