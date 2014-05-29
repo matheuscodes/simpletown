@@ -8,12 +8,14 @@ public class CacheServer {
 	//static DramaCache drama_cache = null;
 	static UserCache user_cache = null;
 	//private static CityCache city_cache;
+	static ItemCache item_cache = null;
 	
 	static synchronized public void buildAll() {
 		// TODO add info and prints
 		getUsers();
 		getCitizens();
 		getPlaces();
+		getItems();
 		//getDramas().build();
 		//getCity().build();
 	}
@@ -59,6 +61,13 @@ public class CacheServer {
 			place_cache = new PlaceCache();
 		}
 		return place_cache;
+	}
+	
+	static public ItemCache getItems() {
+		if (item_cache == null) {
+			item_cache = new ItemCache();
+		}
+		return item_cache;
 	}
 	
 	/*

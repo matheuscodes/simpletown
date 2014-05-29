@@ -78,6 +78,17 @@
 	cursor: pointer;
 }
 
+.dialog p.close{
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: right;
+	cursor: pointer;
+}
+
+.dialog p.close:hover{
+	text-decoration: underline;
+}
+
 .dialog p.reply{
 	text-align: right;
 }
@@ -85,3 +96,19 @@
 .dialog p.reply:hover{
 	font-weight:bold;
 }
+
+.dialog p.used{
+	text-decoration:line-through;
+	cursor:unset;
+}
+
+.dialog p.used:hover{
+	font-weight:normal;
+}
+
+#place_items_block {
+	float: right;
+	margin: 1% 1%;
+	width: 33%;
+}
+
