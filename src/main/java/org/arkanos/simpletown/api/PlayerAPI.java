@@ -79,6 +79,18 @@ public class PlayerAPI extends HttpServlet {
 				return;
 			}
 		}
+		else if(reference.startsWith("/lead/")){
+			reference = reference.replace("/lead/", "");
+			if(reference.length() <= 0){
+				//FIXME NPE when there is no lead.
+				response.getWriter().print(s.getUser().getLead().toJSON());
+			}
+			else{
+				//TODO check code.
+				response.sendError(400,"Bad Request.");
+				return;
+			}
+		}
 		
 		response.sendError(404, "Player request not found.");
 	}

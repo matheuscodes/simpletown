@@ -29,8 +29,7 @@ function Scenario(stage, script){
 			//TODO really get always the first match?
 			//Here NPC can decide what to reply.
 			var NPCnode = this.citizens[who].dialogs[what];
-
-			console.log(NPCnode.line);
+			NPCnode.used = true;
 			//Always take the first...
 			if(NPCnode.replies[0]){
 				this.citizens[who].dialogs.current = this.citizens[who].dialogs[NPCnode.replies[0]];
@@ -57,6 +56,7 @@ var URLHandler = {
 	player_root: "player/",
 	scenario: "scenario/",
 	script: "script/",
+	lead: "lead/",
 	getScript: function(place){
 		return this.player_root + this.script + place;
 	},
@@ -66,10 +66,125 @@ var URLHandler = {
 	getPlayerPlace: function(){
 		return this.player_root + this.scenario;
 	},
+	getPlayerLead: function(){
+		return this.player_root + this.lead;
+	},
 	getPlayerMove: function(place){
 		return this.player_root + place;
 	}
 };
+
+var ConditionNode = {
+	items: function(game,condition){
+		for(var i = 0; i < condition.length; i++){
+			if(game.getLead().hasItemID(condition[i])){
+				return true;
+			}
+		}
+		return false;
+	},
+	skills: function(game,condition){
+		for(var i = 0; i < condition.length; i++){
+			var flag = true;
+			for(var skill in condition[i]){
+				if(!game.getLead().atSkillLevel(skill,condition[i][skill])){
+					flag = false;
+				}
+			}
+			if(flag){
+				return true;
+			}
+		}
+		return false;
+	},
+	attributes: function(game,condition){
+		for(var i = 0; i < condition.length; i++){
+			var flag = true;
+			for(var attribute in condition[i]){
+				if(!game.getLead().atAttributeLevel(attribute,condition[i][skill])){
+					flag = false;
+				}
+			}
+			if(flag){
+				return true;
+			}
+		}
+		return false;
+	} 
+};
+
+function Condition(conditions){
+	if(conditions.length){
+		this.ORs = [];
+		for(var i = 0; i < conditions.length; i++){
+			this.ors.push(new Condition(conditions[i],game));
+		}
+	}
+	else{
+		this.ANDs = {};
+		for(var data in conditions){
+			this.ANDs[data] = conditions[data];
+		}
+	}
+	
+	this.evaluate = function(game){
+		if(this.ORs){
+			for(var j = 0; j < this.ORs.length; j++){
+				if(this.ORs[j].evaluate(game)){
+					return true;
+				}
+			}
+			return false;
+		}
+		else {
+			for(var condition in this.ANDs){
+				if(!ConditionNode[condition](game,this.ANDs[condition])){
+					return false;
+				}
+			}
+			return true;
+		}
+	};
+}
+
+var skillLevel = function(level){
+	switch(level.toLowerCase()){
+		case "curious": return 1;
+		case "student": return 2;
+		case "apprentice": return 3;
+		case "professional": return 4;
+		case "expert": return 5;
+		case "master": return 6;
+		default: return 0;
+	}
+};
+
+function Citizen(who){
+	for(var data in who){
+		this[data] = who[data];
+	}
+	
+	this.hasItemID = function(item){
+		if(this.items){
+			for(var i = 0; i < this.items.length;i++){
+				if(this.items[i].id == item){
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+	
+	this.atSkillLevel = function(skill,level){
+		if(this.skills){
+			return skillLevel(this.skills[skill]) >= skillLevel(level);  
+		}
+	};
+	
+	this.atAttributeLevel = function(attribute,level){
+		return this.attributes[attribute] >= level;
+	};
+}
 
 var SimpletownEngine = {
 	scenarios: {},
@@ -90,6 +205,9 @@ var SimpletownEngine = {
 		connection.open("PUT",URLHandler.getPlayerMove(this.current_scenario.url),false);
 		connection.send();
 	},
+	getLead: function(){
+		return lead;
+	},
 	getScenario: function(){
 		return this.current_scenario;
 	},
@@ -97,6 +215,11 @@ var SimpletownEngine = {
 		return this.previous_scenario;
 	},
 	initialize: function(){
+		var connection = new XMLHttpRequest();
+		connection.open("GET",URLHandler.getPlayerPlace(),false);
+		connection.send();
+		var player_lead = JSON.parse(connection.responseText);
+		this.lead = new Citizen(player_lead); 
 		this.current_scenario = this.getCachedScenario();
 	},
 	getCachedScenario: function(which){
@@ -121,6 +244,9 @@ var SimpletownEngine = {
 			if(loaded.saved_on){
 				script = loaded.state;
 				script.saved_on = loaded.saved_on;
+			}
+			else{
+				script = loaded;
 			}
 			
 			this.scenarios[stage.url] = new Scenario(stage,script);
