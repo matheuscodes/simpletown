@@ -25,6 +25,7 @@ public class UserCache implements CacheInterface {
 		}
 
 		public void addCitizen(Citizen which) {
+			//TODO problem when flushing reading everyone again.
 			getCitizens().add(which);
 		}
 		

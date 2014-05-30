@@ -136,11 +136,13 @@ public class Citizen {
 		json += "},\"mood\":{";
 		json += "\""+Citizen.PLAYING_BEHAVIOUR_FIELD+"\":"+this.behavior+",";
 		json += "\""+Citizen.PLAYING_BONDING_FIELD+"\":"+this.bonding+",";
-		json += "\""+Citizen.PLAYING_STATE_OF_MIND_FIELD+"\":"+this.state_of_mind+"}";
+		json += "\""+Citizen.PLAYING_STATE_OF_MIND_FIELD+"\":"+this.state_of_mind+"},";
 		json += "\""+Citizen.ID_FIELD+"\":"+this.id+",";
-		json += "\""+Citizen.NAME_FIELD+"\":"+this.name+",";
-		json += "\""+Citizen.LAST_NAME_FIELD+"\":"+this.last_name+",";
-		json += "\""+Citizen.PLAYING_DRAMA_FIELD+"\":"+this.drama+"}";
+		if(this.drama != null && this.drama.compareTo("null") != 0){
+			json += "\""+Citizen.PLAYING_DRAMA_FIELD+"\":"+this.drama+",";
+		}
+		json += "\""+Citizen.LAST_NAME_FIELD+"\":\""+this.last_name+"\",";
+		json += "\""+Citizen.NAME_FIELD+"\":\""+this.name+"\"}";
 		return json;
 	}
 }

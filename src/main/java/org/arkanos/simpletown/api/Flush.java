@@ -26,6 +26,7 @@ public class Flush extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//FIXME flush does not work on lead citizens attributes
 		CacheServer.flushAll();
 		CacheServer.buildAll();
 	}

@@ -84,6 +84,7 @@ public class PlayerAPI extends HttpServlet {
 			if(reference.length() <= 0){
 				//FIXME NPE when there is no lead.
 				response.getWriter().print(s.getUser().getLead().toJSON());
+				return;
 			}
 			else{
 				//TODO check code.
@@ -91,7 +92,6 @@ public class PlayerAPI extends HttpServlet {
 				return;
 			}
 		}
-		
 		response.sendError(404, "Player request not found.");
 	}
 	
