@@ -110,5 +110,23 @@
 	float: right;
 	margin: 1% 1%;
 	width: 33%;
+	text-align: left;
+}
+
+#place_items_block ul{
+	width: 88%;
+	padding: 0;
+	margin: 0;
+	margin-left: 10%;
+}
+
+.item_name {
+	font-size: 0.8em;
+	display: inline;
+}
+
+.item_action {
+	font-size: 0.6em;
+	float: right;
 }
 

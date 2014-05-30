@@ -49,19 +49,54 @@ function Scenario(stage, script){
 		}
 		return false;
 	};
+	
+	this.getItem = function(item_id){
+		var next = [];
+		if(this.items){
+			for(var i = 0; i < this.items.length;i++){
+				if(this.items[i].id == item_id){
+					return this.items[i];
+				}
+				else{
+					if(this.items[i].items){
+						for(var j = 0; j < this.items[i].items.length;j++){
+							next.push(this.items[i].items[j]);
+						}
+					}
+				}
+			}
+			for(var k = 0; k < next.length;k++){
+				if(next[k].id == item_id){
+					return next[k];
+				}
+				else{
+					if(next[k].items){
+						for(var l = 0; l < next[k].items.length;l++){
+							next.push(next[k].items[l]);
+						}
+					}
+				}
+			}
+		}
+		return null;
+	};
 }
 
 var URLHandler = {
+	item_root: "items/",
 	place_root:"places/",
 	player_root: "player/",
 	scenario: "scenario/",
 	script: "script/",
 	lead: "lead/",
-	getScript: function(place){
-		return this.player_root + this.script + place;
-	},
 	getPlace: function(place){
 		return this.place_root + place;
+	},
+	getItem: function(item){
+		return this.item_root + item;
+	},
+	getScript: function(place){
+		return this.player_root + this.script + place;
 	},
 	getPlayerPlace: function(){
 		return this.player_root + this.scenario;
@@ -101,7 +136,7 @@ var ConditionNode = {
 		for(var i = 0; i < condition.length; i++){
 			var flag = true;
 			for(var attribute in condition[i]){
-				if(!game.getLead().atAttributeLevel(attribute,condition[i][skill])){
+				if(!game.getLead().atAttributeLevel(attribute,condition[i][attribute])){
 					flag = false;
 				}
 			}
@@ -117,7 +152,7 @@ function Condition(conditions){
 	if(conditions.length){
 		this.ORs = [];
 		for(var i = 0; i < conditions.length; i++){
-			this.ors.push(new Condition(conditions[i],game));
+			this.ORs.push(new Condition(conditions[i]));
 		}
 	}
 	else{
@@ -182,9 +217,33 @@ function Citizen(who){
 	};
 	
 	this.atAttributeLevel = function(attribute,level){
+		console.log(this.attributes[attribute]+","+level);
 		return this.attributes[attribute] >= level;
 	};
 }
+
+var Missing = {
+	fetchItems: function(items){
+		if(items && items.length){
+			for(var i = 0; i < items.length; i++){
+				this.fetchItems(items[i].items);
+				this.fetchItems(items[i]);
+			}
+		}
+		else if(items){
+			var connection = new XMLHttpRequest();
+			connection.open("GET",URLHandler.getItem(items.id),false);
+			connection.send();
+			var item = JSON.parse(connection.responseText);
+			for(var data in item){
+				items[data] = item[data];
+			}
+		}
+	},
+	fetchAll: function(script){
+		this.fetchItems(script.items);
+	}
+};
 
 var SimpletownEngine = {
 	scenarios: {},
@@ -195,7 +254,6 @@ var SimpletownEngine = {
 			var connection = new XMLHttpRequest();
 			connection.open("PUT",URLHandler.getScript(this.current_scenario.url),false);
 			data = JSON.stringify(this.current_scenario);
-			//TODO send data with proper thing... without size limits
 			connection.setRequestHeader("Content-Type", "application/x-json");
 			connection.setRequestHeader("Content-Length", data.length);
 			connection.send(data);
@@ -206,7 +264,7 @@ var SimpletownEngine = {
 		connection.send();
 	},
 	getLead: function(){
-		return lead;
+		return this.lead;
 	},
 	getScenario: function(){
 		return this.current_scenario;
@@ -216,7 +274,7 @@ var SimpletownEngine = {
 	},
 	initialize: function(){
 		var connection = new XMLHttpRequest();
-		connection.open("GET",URLHandler.getPlayerPlace(),false);
+		connection.open("GET",URLHandler.getPlayerLead(),false);
 		connection.send();
 		var player_lead = JSON.parse(connection.responseText);
 		this.lead = new Citizen(player_lead); 
@@ -247,6 +305,7 @@ var SimpletownEngine = {
 			}
 			else{
 				script = loaded;
+				Missing.fetchAll(script);
 			}
 			
 			this.scenarios[stage.url] = new Scenario(stage,script);

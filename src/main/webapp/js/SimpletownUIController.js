@@ -12,12 +12,24 @@ var StyleHandler = {
 		people_content: "place_citizens_id",
 		item_window: "place_items_block",
 		item_content: "place_items_id",
+		item_action: "item_action",
+		item_name: "item_name",
 		dialog_window: "dialog_block",
 		dialog_content: "dialog_id",
 		close: "close",
 		reply: "reply",
 		used: "used",
 		line: "line"
+};
+
+function SpecialActions(){
+	this.open = false;
+	this.canExecute = function(item,action){
+		switch(action){
+			case "open": return item.items;
+		}
+		return false;
+	};
 };
 
 var SimpletownUIController = {
@@ -65,21 +77,89 @@ var SimpletownUIController = {
 		}
 		
 		var items = document.getElementById(StyleHandler.item_content);
-		if(items){
-			items.innerHTML = "";
-			if(scenario.items){
-				for(var i = 0; i < scenario.items.length; i++){
-					items.innerHTML += "<p>"+scenario.items[i].id+"</p>";
-				}
-				this.show(StyleHandler.item_window);
-			}
-			else{
-				this.hide(StyleHandler.item_window);
-			}
+		if(scenario.items){
+			this.doItem(items,null,scenario.items);
+			this.show(StyleHandler.item_window);
+		}
+		else{
+			this.hide(StyleHandler.item_window);
 		}
 		
 		/* Making sure invisible are not visible */
 		this.hide(StyleHandler.dialog_window);
+	},
+	openItem: function(item_id){
+		var item = this.game.getScenario().getItem(item_id);
+		var content = document.getElementById("item"+item_id);
+		this.doItem(content,item, item.items);
+	},
+	doItem: function(content,item,items){
+		if(content){
+			content.innerHTML = "";
+			var text = "<ul>";
+			if(item){
+				text += "<p class=\""+StyleHandler.item_name+"\">"+item.name+"</p>";
+			}
+			if(items){
+				var sa = new SpecialActions();
+				for(var i = 0; i < items.length; i++){
+					var visible = true;
+					if(items[i].conditions){
+						var condition = new Condition(items[i].conditions);
+						visible = condition.evaluate(this.game);
+					}
+					if(visible){
+						text += "<li id=\"item"+items[i].id+"\">";
+						for(var action in sa){
+							if(items[i].actions && items[i].actions[action]){
+								var c = new Condition(items[i].actions[action].conditions);
+								if(c.evaluate(this.game)){
+									text += "<p class=\""+StyleHandler.item_action+"\" ";
+									text += "onclick='"+controller_name+".openItem("+items[i].id+")'";
+									text += ">"+action+"</p>";
+								}
+								else{
+									if(items[i].actions[action].placeholder){
+										text += "<p class=\""+StyleHandler.item_action+"\">"+action;
+										text += "<br/>("+items[i].actions[action].placeholder+")";
+										text += "</p>";
+									}
+								}
+								sa[action] = true;
+							}
+							else{
+								if(sa.canExecute(items[i], action)){
+									text += "<p class=\""+StyleHandler.item_action+"\" ";
+									text += "onclick='"+controller_name+".openItem("+items[i].id+")'";
+									text += ">"+action+"</p>";
+									sa[action] = true;
+								}
+							}
+							
+						}
+						for(var action in items[i].actions){
+							if(!sa[action]){
+								var c = new Condition(items[i].actions[action].conditions);
+								if(c.evaluate(this.game)){
+									text += "<p class=\""+StyleHandler.item_action+"\">"+action+"</p>";
+								}
+								else{
+									if(items[i].actions[action].placeholder){
+										text += "<p class=\""+StyleHandler.item_action+"\">"+action;
+										text += "<br/>("+items[i].actions[action].placeholder+")";
+										text += "</p>";
+									}
+								}
+							}
+						}
+						text += "<p class=\""+StyleHandler.item_name+"\">"+items[i].name+"</p>";
+						text += "</li>";
+					}
+				}
+				text += "</ul>";
+				content.innerHTML = text;
+			}
+		}
 	},
 	moveTo: function(place){
 		this.game.changeScenario(place);
