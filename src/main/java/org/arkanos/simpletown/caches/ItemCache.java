@@ -1,5 +1,6 @@
 package org.arkanos.simpletown.caches;
 
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -28,6 +29,13 @@ public class ItemCache {
 			ResultSet all = Database.query("SELECT * FROM "+Item.TABLE);
 			while (all.next()) {
 				Item i = new Item(all.getInt(Item.ID_FIELD), all.getString(Item.NAME_FIELD),all.getString(Item.DESCRIPTION_FIELD));
+				Blob b = all.getBlob(Item.IMAGE_FIELD);
+				if(b != null){
+					long s = b.length();
+					if(b.getBytes(1, (int)s) != null){
+						i.setImage(b.getBytes(1, (int)s));
+					}
+				}
 				items.put(all.getString(Item.ID_FIELD), i);
 			}
 			all.close();
