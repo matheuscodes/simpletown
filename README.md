@@ -10,3 +10,5 @@ Simpletown is a project to bring storytelling to a new level. One city, countles
 
 ## This is still not even complete as a prototype
 Beware in case you're checking out and compiling the code.
+
+To run you need to setup the DB (not in the source code) and `mvn jetty:run`
